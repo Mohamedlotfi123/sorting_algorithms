@@ -8,37 +8,28 @@
  */
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *ptr, *tmp = NULL;
+	listint_t *ptr, *tmp = NULL, *tracker;
 
-	ptr = *list;
+	ptr = (*list)->next;
 	while (ptr != NULL)
 	{
-		if (tmp != NULL && ptr->n < tmp->n)
+		tmp = ptr->prev;
+		tracker = ptr;
+		while (ptr->prev != NULL && ptr->n < tmp->n)
 		{
-			while (tmp->prev != NULL && ptr->n < tmp->n)
-				tmp = tmp->prev;
 			if (tmp->prev != NULL)
-			{
-				(ptr->prev)->next = ptr->next;
-				(tmp->next)->prev = ptr;
-				ptr->next = tmp->next;
-				ptr->prev = tmp;
-				tmp->next = ptr;
-			}
-			else
-			{
-				tmp->next = ptr->next;
-				tmp->prev = ptr;
-				ptr->next = tmp;
-				ptr->prev = NULL;
-				if (tmp->next != NULL)
-					(tmp->next)->prev = tmp;
+				(tmp->prev)->next = ptr;
+			if (ptr->next != NULL)
+				(ptr->next)->prev = tmp;
+			ptr->prev = tmp->prev;
+			tmp->next = ptr->next;
+			ptr->next = tmp;
+			tmp->prev = ptr;
+			tmp = ptr->prev;
+			if (ptr->prev == NULL)
 				*list = ptr;
-			}
 			print_list(*list);
 		}
-		printf("%d\n", ptr->n);
-		tmp = ptr;
-		ptr = ptr->next;
+		ptr = tracker->next;
 	}
 }
